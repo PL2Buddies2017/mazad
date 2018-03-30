@@ -37,6 +37,16 @@ and open the template in the editor.
 }
 
 
+div.noti-suc{
+    position: fixed;
+    right: -100%;
+    top: 22vh;
+    padding: 10px;
+    background-color: $main-color;
+    color:$font-color2;
+    z-index: 99999;
+}
+
 li{list-style: none;}
 a{text-decoration: none;}
 input{outline: medium none currentcolor;}

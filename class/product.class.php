@@ -5,11 +5,13 @@
  *          this file contains product handle function class     *
  *****************************************************************
 */
+
 class product{
 	/* start of proberties */
 	private $tableName 			= "product";// set table name "DATABASE TABLE NAME"
-	private $uploadsDir 		= "uploads/sessionFiles/";// set directors of uploading file "USED FOR PRODUCT PHOTO"
+	private $uploadsDir 		= UPLOADS_DIR . "sessionFiles/";// set directors of uploading file "USED FOR PRODUCT PHOTO"
 	private $insertArray 		= array("imagePath", "tags", "productName", "catId");// this array of data base cols
+	private $files;
 	/* end of proberties */
 	/* start of methods*/
 
@@ -20,6 +22,11 @@ class product{
 		::relations::   this<->session | this<->user
 		::TABLE NAME::  (product)
 	*/
+
+	public function __construct($f){
+		$this->files = $f;
+	}
+	
 	public function addNewProduct(){
 		/*
 			NOT THAT::: data not valid yet
@@ -29,12 +36,15 @@ class product{
 		/* start collecting data phase */
 		$productName 			= isset($_POST['itemName'])?$_POST['itemName']:""; // productName
 		$sessionTags			= isset($_POST['tags'])?$_POST['tags']:""; // session tags for describe product
-		$productImage			= $this->uploadsDir . $_FILES["images"]["name"]; // get imagePath "NOTE may make it method ******************"
-		$productCatiegorie		= isset($_POST['categories'])?$_POST['categories']:""; // set productCatiegorie this make forignKey with cate.
-		$valuesArray			= array(/*$productImage*/"product", $sessionTags, $productName, $productCatiegorie); // make values array from collection data
+		$productImage			= $this->uploadsDir . $_FILES['images']["name"]; // get imagePath "NOTE may make it method ******************"
+		$productCatiegorie		= isset($_POST['categories'])?intval($_POST['categories']):""; // set productCatiegorie this make forignKey with cate.
+		$valuesArray			= array($_FILES['images']["name"]
+										, $sessionTags
+										, $productName
+										, $productCatiegorie); // make values array from collection data
 		$connectMazadDB 		= new dataBase(HOST, DB_NAME, DB_USER, DB_PASS); // connect to database
 		$connectMazadDB->setTable($this->tableName); // set product active table "DATA BASE TABLE NAME"
-		//$this->uploadProductImage(); // execute uploadProductImage for uploading image
+		$this->uploadProductImage(); // execute uploadProductImage for uploading image
 		$connectMazadDB->insert($this->insertArray, $valuesArray); // inserting data to database  
 	}// end of addNewProduct
 
@@ -46,8 +56,12 @@ class product{
 
 	private function uploadProductImage(){
 		$test = new fileUploader($this->uploadsDir, "images"); // make new object of fileUploader
-		print_r($test->getErrors()); // not Recommend but to debug only ********::******* don't forget to remove it
+		//print_r($test->getErrors()); // not Recommend but to debug only ********::******* don't forget to remove it
 		$test->upload();// uploading phase
 		/* End of methods*/
 	}// end of uploadProductImage function
+
+	public function setImageName($img){
+		$_FILES['images'] = $img;
+	}
 }//end of class product

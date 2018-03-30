@@ -143,22 +143,7 @@ function uploadImage(form){
     });
 }
 
-$("form").on("submit", function(e){
-    "use strict";
-    e.preventDefault();
-    /*var url = $(this).attr("action");
-    var formData = $(this).serializeArray();
-    console.debug(formData);
-    $.post(url, formData).done(function (data) {
-        alert(data);
-    });*/
-    uploadeFile("images", "images", "js/upload.php");
-});
-
-
-
-
-function uploadeFile(fileId, fileName, urlDir){
+function uploadeFile(fileId, fileName, urlDir, form_data, func){
     var property = document.getElementById(fileId).files[0];
     var imageName = property.name;
     var image_exetension = imageName.split('.').pop().toLowerCase();
@@ -169,7 +154,6 @@ function uploadeFile(fileId, fileName, urlDir){
     if(imageSize > 2000000){
         alert("Image File Size is Very big");
     }else{
-        var form_data = new FormData();
         form_data.append(fileName, property);
         $.ajax({
             url: urlDir,
@@ -178,10 +162,7 @@ function uploadeFile(fileId, fileName, urlDir){
             contentType:false,
             cache: false,
             processData: false,
-            success: function(data){
-                alert(data);
-                console.log("good");
-            },
+            success: func,
             error: function(data){
                 console.log("error");
                 console.log(data);
@@ -189,3 +170,35 @@ function uploadeFile(fileId, fileName, urlDir){
         });
     }
 }
+
+function makeInsertArray(array, dataForm){
+    for(var i=0;i<array.length;i++){
+        dataForm.append(array[i].name, array[i].value);
+    }
+    console.debug(dataForm);
+    return dataForm;
+}
+
+$("form#mkSession").on("submit", function(e){
+    "use strict";
+    e.preventDefault();
+    var url = $(this).attr("action");
+    var formData = $(this).serializeArray();
+    formData = makeInsertArray(formData, new FormData());
+    formData.append("ACTION", $(this).data('action'));
+    uploadeFile("images", "images", url, formData, function(data){
+        (data == '11')
+        {
+            $("form#mkSession").fadeOut(500, function(){
+                $(".overlay").fadeOut(500, function(){
+                    $(".noti-suc").children("span").text("SESSION ADDED SUCCESSFULLY");
+                    $(".noti-suc").animate({right:"0%"}, 1000, function(){
+                        $(this).animate({right:"0%"}, 1000, function(){
+                            $(this).animate({right:"-100%"}, 1000);
+                        });
+                    });
+                });
+            });
+        }
+    });
+});

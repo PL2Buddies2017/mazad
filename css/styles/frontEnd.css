@@ -1399,6 +1399,15 @@ section.admin-panel {
   -ms-box-sizing: border-box;
   -o-box-sizing: border-box; }
 
+div.noti-suc {
+  position: fixed;
+  right: -100%;
+  top: 22vh;
+  padding: 10px;
+  background-color: #040546;
+  color: #fff;
+  z-index: 99999; }
+
 li {
   list-style: none; }
 

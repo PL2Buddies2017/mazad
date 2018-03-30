@@ -41,13 +41,15 @@ class session{
 		$sessionStartPrice 		= isset($_POST['startPrice'])?$_POST['startPrice']:"";// start price of ses.
 		$sessionStartTime		= isset($_POST['startTime'])?$_POST['startTime']:""; // srat Time
 		$sessionEndTime			= isset($_POST['endTime'])?$_POST['endTime']:""; // end time 
-		$sessionAutoSellValue	= isset($_POST['autoSellValue'])?$_POST['autoSellValue']:""; // auto Sell
+		$sessionAutoSellValue	= isset($_POST['autoSellValue'])?intval($_POST['autoSellValue']):""; // auto Sell
 		$sessionBlindValue  	= isset($_POST['blindTime'])?$_POST['blindTime']:""; // blindValue
 		$sessionPassword 		= isset($_POST['password'])?sha1($_POST['password']):""; // session password
 		$sessionIncreament  	= isset($_POST['sessionIncreament'])?$_POST['sessionIncreament']:""; // increament of next price
+		$ownerId				= isset($_POST['ownerId'])?$_POST['ownerId']:"";
 		/* end collecting data phase */
 		$connectMazadDB 		= new dataBase(HOST, DB_NAME, DB_USER, DB_PASS); // connect to mazad dataBase
-		$setNewProductToDataBase = new product();// make new object from pruduct to add new one
+		$setNewProductToDataBase = new product($_FILES);// make new object from pruduct to add new one
+		$setNewProductToDataBase->setImageName($_FILES["images"]);
 		$setNewProductToDataBase->addNewProduct();// execute addNewProuduct function to add this
 		$productId 				= $setNewProductToDataBase->getLastProductId(); // get last product id for forignKey between product <-> session
 		$connectMazadDB->setTable($this->tableName);// set session "TABLE NAME" active to execute quei.
@@ -61,7 +63,7 @@ class session{
 			$sessionEndTime, 
 			$sessionPassword, 
 			$productId, 
-		1/************************/);// end of session values array
+			$ownerId);// end of session values array
 		$connectMazadDB->insert($this->insertArray, $valuesArray);// this step for insert data
 		/*echo "<pre>";
 		print_r($_POST); //NOTE THAT ::: this for debug only :::
@@ -71,8 +73,10 @@ class session{
 }//end of class session
 
 if($_SERVER['REQUEST_METHOD'] === "POST"){
-	$lol = new session('add');
-	//echo $_FILE["images"]["name"];
+	if($_POST['ACTION'] == 'ADD')
+	{
+		$lol = new session('add');
+		echo "1";
+	}
 	
-	var_dump($_POST);
 }

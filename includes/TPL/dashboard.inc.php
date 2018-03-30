@@ -1,9 +1,12 @@
-
-
 <section class="dashboard col-11">
     <div class="container-fluid">
         <h2 class="head">All Markets</h2>
-
+        <div class="noti-suc">
+            <i class="far fa-thumbs-up"></i>
+            <span>
+            noti-suc
+            </span>
+    </div>
         <div class="session col-10">
             
             <div class="row session-row">
